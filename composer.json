@@ -1,0 +1,20 @@
+{
+    "name": "barryvdh/laravel-async-queue",
+    "description": "",
+    "authors": [
+        {
+            "name": "Barry vd. Heuvel",
+            "email": "barryvdh@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.0",
+        "illuminate/support": "4.x"
+    },
+    "autoload": {
+        "psr-0": {
+            "Barryvdh\\Queue": "src/"
+        }
+    },
+    "minimum-stability": "dev"
+}

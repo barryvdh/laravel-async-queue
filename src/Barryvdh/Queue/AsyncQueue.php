@@ -49,10 +49,17 @@ class AsyncQueue extends Queue implements QueueInterface {
      */
     public function makeProcess($payload)
     {
-        $string = 'php artisan queue:async %s --env=%s > /dev/null 2>&1 &';
-
         $environment = $this->container->environment();
         $cwd = $this->container['path.base'];
+
+        $string = 'php artisan queue:async %s --env=%s';
+
+        if (substr(php_uname(), 0, 7) == "Windows"){  
+            $string = 'start /B ' . $string; 
+        } 
+        else { 
+            $string .= ' > /dev/null 2>&1 &';
+        } 
 
         $command = sprintf($string, $payload, $environment);
 

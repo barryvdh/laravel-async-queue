@@ -17,8 +17,11 @@ Add the Service Provider to the providers array in config/app.php
 
 You should now be able to use the async driver in config/queue.php
 
-    'connections' => array(
 
+    'default' => 'async',
+    
+    'connections' => array(
+        ...
         'async' => array(
             'driver' => 'async',
         ),

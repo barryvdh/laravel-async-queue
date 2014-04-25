@@ -29,13 +29,14 @@ class AsyncQueue extends Queue implements QueueInterface {
     /**
      * Create a payload string from the given job and data.
      *
-     * @param  string  $job
-     * @param  mixed   $data
+     * @param  string $job
+     * @param  mixed  $data
+     * @param  string $queue
      * @return string
      */
-    protected function createPayload($job, $data = '')
+    protected function createPayload($job, $data = '', $queue = null)
     {
-        $payload = parent::createPayload($job, $data);
+        $payload = parent::createPayload($job, $data, $queue);
 
         return base64_encode($payload);
     }
@@ -81,4 +82,16 @@ class AsyncQueue extends Queue implements QueueInterface {
     public function pop($queue = null) {}
 
 
+    /**
+     * Push a raw payload onto the queue.
+     *
+     * @param  string $payload
+     * @param  string $queue
+     * @param  array $options
+     * @return mixed
+     */
+    public function pushRaw($payload, $queue = null, array $options = array())
+    {
+        //
+    }
 }

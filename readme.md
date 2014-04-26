@@ -4,7 +4,7 @@
 Just like the 'sync' driver, this is not a real queue driver. It is always fired immediatly.
 The only difference is that the closure is sent to the background without waiting for the response.
 
-Note: Alpha release, only tested on Linux.
+Note: Alpha release, only tested on Linux, should also work on Windows
 
 ### Install
 Add the package to the require section of your composer.json and run `composer update`

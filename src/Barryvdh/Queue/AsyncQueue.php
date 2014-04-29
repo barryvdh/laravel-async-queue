@@ -55,7 +55,7 @@ class AsyncQueue extends Queue implements QueueInterface {
         $string = 'php artisan queue:async %s --env=%s';
 
         if (substr(php_uname(), 0, 7) == "Windows"){  
-            $string = 'start /B ' . $string; 
+            $string = 'start /B ' . $string . ' > NUL'; 
         } 
         else { 
             $string .= ' > /dev/null 2>&1 &';

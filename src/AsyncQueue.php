@@ -53,17 +53,14 @@ class AsyncQueue extends Queue implements QueueInterface {
         $environment = $this->container->environment();
         $cwd = $this->container['path.base'];
         $string = 'php artisan queue:async %d --env=%s ';
-
         if (defined('PHP_WINDOWS_VERSION_BUILD')){
-            $string = 'start /B ' . $string;
+            $string = 'start /B ' . $string . ' > NUL';
         } else {
-            $string = 'nohup ' . $string . ' &';
+            $string = 'nohup ' . $string . ' > /dev/null 2>&1 &';
         }
 
         $command = sprintf($string, $jobId, $environment);
-
         $process = new Process($command, $cwd);
-        $process->disableOutput();
         $process->run();
     }
 

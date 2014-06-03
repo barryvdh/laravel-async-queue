@@ -17,7 +17,7 @@ class CreateQueueTable extends Migration {
             $table->increments('id');
             $table->integer('status')->default(0);
             $table->integer('retries')->default(0);
-            $table->integer('seconds')->default(0);
+            $table->integer('delay')->default(0);
             $table->text('payload')->nullable();
             $table->timestamps();
         });

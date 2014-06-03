@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property integer $id
  * @property integer $status
  * @property integer $retries
- * @property integer $seconds
+ * @property integer $delay
  * @property string  $payload
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at

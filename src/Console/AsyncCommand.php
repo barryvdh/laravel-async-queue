@@ -1,7 +1,7 @@
 <?php namespace Barryvdh\Queue\Console;
 
+use Barryvdh\Queue\Models\Job;
 use Illuminate\Console\Command;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
 use Barryvdh\Queue\Jobs\AsyncJob;
 
@@ -19,7 +19,7 @@ class AsyncCommand extends Command {
 	 *
 	 * @var string
 	 */
-	protected $description = 'Run a base64+json encode serialized queue';
+	protected $description = 'Run a queue from the database';
 
 	/**
 	 * Create a new command instance.
@@ -37,9 +37,9 @@ class AsyncCommand extends Command {
 	 */
 	public function fire()
 	{
-        $payload = $this->argument('payload');
+        $item = Job::findOrFail($this->argument('job_id'));
 
-        $job = new AsyncJob($this->laravel, $payload);
+        $job = new AsyncJob($this->laravel, $item);
 
         $job->fire();
 
@@ -53,18 +53,8 @@ class AsyncCommand extends Command {
 	protected function getArguments()
 	{
 		return array(
-			array('payload', InputArgument::REQUIRED, 'The Job Payload'),
+			array('job_id', InputArgument::REQUIRED, 'The Job ID'),
 		);
-	}
-
-	/**
-	 * Get the console command options.
-	 *
-	 * @return array
-	 */
-	protected function getOptions()
-	{
-		return array();
 	}
 
 }

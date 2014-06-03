@@ -3,6 +3,7 @@
 use Illuminate\Queue\Queue;
 use Illuminate\Queue\QueueInterface;
 use Symfony\Component\Process\Process;
+use Barryvdh\Queue\Models\Job;
 
 class AsyncQueue extends Queue implements QueueInterface {
 
@@ -16,53 +17,54 @@ class AsyncQueue extends Queue implements QueueInterface {
      */
     public function push($job, $data = '', $queue = null)
     {
-        $payload = $this->createPayload($job, $data);
-
-        $process = $this->makeProcess($payload);
-        $process->disableOutput();
-        $process->run();
-
-
+        $id = $this->storeJob($job, $data);
+        $this->startProcess($id, 0);
         return 0;
     }
 
     /**
-     * Create a payload string from the given job and data.
-     *
-     * @param  string $job
-     * @param  mixed  $data
-     * @param  string $queue
-     * @return string
+     * Store the job in the database
+     * 
+     * @param  string  $job
+     * @param  mixed   $data
+     * @param  integer $delay
+     * @return integer The id of the job
      */
-    protected function createPayload($job, $data = '', $queue = null)
-    {
-        $payload = parent::createPayload($job, $data, $queue);
+    public function storeJob($job, $data, $delay = 0){
 
-        return base64_encode($payload);
+        $payload = $this->createPayload($job, $data);
+
+        $job = new Job;
+        $job->status = Job::STATUS_OPEN;
+        $job->delay = $delay;
+        $job->payload = $payload;
+        $job->save();
+
+        return $job->id;
     }
 
     /**
-     * Make a Process for the Artisan command with the payload
+     * Make a Process for the Artisan command for the job id
      *
-     * @param $payload
-     * @return \Symfony\Component\Process\Process
+     * @param  integer $jobId
      */
-    public function makeProcess($payload)
+    public function startProcess($jobId)
     {
         $environment = $this->container->environment();
         $cwd = $this->container['path.base'];
+        $string = 'php artisan queue:async %d --env=%s ';
 
-        $string = 'php artisan queue:async %s --env=%s';
-
-        if (defined('PHP_WINDOWS_VERSION_BUILD')){  
-            $string = 'start /B ' . $string; 
-        } else { 
+        if (defined('PHP_WINDOWS_VERSION_BUILD')){
+            $string = 'start /B ' . $string;
+        } else {
             $string = 'nohup ' . $string . ' &';
-        } 
+        }
 
-        $command = sprintf($string, $payload, $environment);
+        $command = sprintf($string, $jobId, $environment);
 
-        return new Process($command, $cwd);
+        $process = new Process($command, $cwd);
+        $process->disableOutput();
+        $process->run();
     }
 
     /**
@@ -76,7 +78,10 @@ class AsyncQueue extends Queue implements QueueInterface {
      */
     public function later($delay, $job, $data = '', $queue = null)
     {
-        return $this->push($job, $data, $queue);
+        $delay = $this->getSeconds($delay);
+        $id = $this->storeJob($job, $data, $delay);
+        $this->startProcess($id);
+        return 0;
     }
 
     /**

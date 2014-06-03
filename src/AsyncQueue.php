@@ -19,7 +19,7 @@ class AsyncQueue extends Queue implements QueueInterface {
         $payload = $this->createPayload($job, $data);
 
         $process = $this->makeProcess($payload);
-
+        $process->disableOutput();
         $process->run();
 
 
@@ -55,9 +55,9 @@ class AsyncQueue extends Queue implements QueueInterface {
         $string = 'php artisan queue:async %s --env=%s';
 
         if (defined('PHP_WINDOWS_VERSION_BUILD')){  
-            $string = 'start /B ' . $string . ' > NUL'; 
+            $string = 'start /B ' . $string; 
         } else { 
-            $string .= ' > /dev/null 2>&1 &';
+            $string = 'nohup ' . $string . ' &';
         } 
 
         $command = sprintf($string, $payload, $environment);

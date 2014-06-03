@@ -9,7 +9,7 @@ The only difference is that the closure is sent to the background without waitin
 ### Install
 Add the package to the require section of your composer.json and run `composer update`
 
-    "barryvdh/laravel-async-queue": "dev-master"
+    "barryvdh/laravel-async-queue": "0.2.x"
 
 Add the Service Provider to the providers array in config/app.php
 

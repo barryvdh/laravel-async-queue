@@ -22,7 +22,7 @@ You need to run the migrations for this package
 
 Or publish them, so they are copied to your regular migrations
 
-    $ php artisan migrate:publish --package="barryvdh/laravel-async-queue"
+    $ php artisan migrate:publish barryvdh/laravel-async-queue
 
 You should now be able to use the async driver in config/queue.php
 

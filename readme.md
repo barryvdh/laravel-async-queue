@@ -20,6 +20,10 @@ You need to run the migrations for this package
 
     $ php artisan migrate --package="barryvdh/laravel-async-queue"
 
+Or publish them, so they are copied to your regular migrations
+
+    $ php artisan migrate:publish --package="barryvdh/laravel-async-queue"
+
 You should now be able to use the async driver in config/queue.php
 
     'default' => 'async',

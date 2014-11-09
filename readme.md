@@ -1,4 +1,5 @@
 # Laravel 4 Async Queue Driver
+
 ## Push a function/closure to the background.
 
 Just like the 'sync' driver, this is not a real queue driver. It is always fired immediatly.
@@ -8,6 +9,7 @@ This package is more usable as an alternative for running incidental tasks in th
 > **Note:** If you are coming from 0.1.0 (or dev-master), you will need to run the migrations, since the new versions uses a database to store the queue.
 
 ### Install
+
 Add the package to the require section of your composer.json and run `composer update`
 
     "barryvdh/laravel-async-queue": "0.2.x"
@@ -15,7 +17,7 @@ Add the package to the require section of your composer.json and run `composer u
 Add the Service Provider to the providers array in config/app.php
 
     'Barryvdh\Queue\AsyncServiceProvider',
-    
+
 You need to run the migrations for this package
 
     $ php artisan migrate --package="barryvdh/laravel-async-queue"
@@ -27,7 +29,7 @@ Or publish them, so they are copied to your regular migrations
 You should now be able to use the async driver in config/queue.php
 
     'default' => 'async',
-    
+
     'connections' => array(
         ...
         'async' => array(

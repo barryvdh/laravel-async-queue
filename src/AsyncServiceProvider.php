@@ -46,8 +46,8 @@ class AsyncServiceProvider extends ServiceProvider
     protected function registerAsyncCommand($app)
     {
         $app['command.queue.async'] = $app->share(function ($app) {
-                return new AsyncCommand();
-            });
+             return new AsyncCommand();
+        });
 
         $this->commands('command.queue.async');
     }
@@ -62,8 +62,8 @@ class AsyncServiceProvider extends ServiceProvider
     protected function registerAsyncConnector($manager)
     {
         $manager->addConnector('async', function () {
-                return new AsyncConnector();
-            });
+            return new AsyncConnector();
+        });
     }
 
     /**

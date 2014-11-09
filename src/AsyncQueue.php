@@ -5,8 +5,7 @@ namespace Barryvdh\Queue;
 use Barryvdh\Queue\Models\Job;
 use Illuminate\Queue\Queue;
 use Illuminate\Queue\QueueInterface;
-use SebastianBergmann\Environment\Runtime;
-use Symfony\Component\Process\Process;
+use Symfony\Component\Process\PhpExecutableFinder;
 
 class AsyncQueue extends Queue implements QueueInterface
 {
@@ -63,8 +62,8 @@ class AsyncQueue extends Queue implements QueueInterface
         $command = $this->getCommand($jobId);
         $cwd = $this->container['path.base'];
 
-        $process = new Process($command, $cwd);
-        $process->run();
+        $process = new AsyncProcess($command, $cwd);
+        $process->start();
     }
 
     /**
@@ -76,17 +75,10 @@ class AsyncQueue extends Queue implements QueueInterface
      */
     protected function getCommand($jobId)
     {
-        $string = $this->getBinary().' artisan queue:async %d --env=%s ';
-
-        if (defined('PHP_WINDOWS_VERSION_BUILD')) {
-            $string = 'start /B '.$string.' > NUL';
-        } else {
-            $string = 'nohup '.$string.' > /dev/null 2>&1 &';
-        }
-
+        $command = $this->getBinary().' artisan queue:async %d --env=%s ';
         $environment = $this->container->environment();
 
-        return sprintf($string, $jobId, $environment);
+        return sprintf($command, $jobId, $environment);
     }
 
     /**
@@ -96,9 +88,9 @@ class AsyncQueue extends Queue implements QueueInterface
      */
     protected function getBinary()
     {
-        $runtime = new Runtime();
+        $finder = new PhpExecutableFinder();
 
-        return $runtime->getBinary();
+        return escapeshellarg($finder->find());
     }
 
     /**

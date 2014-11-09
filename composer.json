@@ -11,7 +11,6 @@
         "php": ">=5.3.0",
         "illuminate/support": "~4.0",
         "illuminate/console": "~4.0",
-        "sebastian/environment": "~1.0",
         "symfony/process": "~2.3"
     },
     "autoload": {

@@ -6,20 +6,20 @@ use Barryvdh\Queue\Console\AsyncCommand;
 
 class AsyncServiceProvider extends ServiceProvider {
 
-	/**
-	 * Indicates if loading of the provider is deferred.
-	 *
-	 * @var bool
-	 */
-	protected $defer = false;
+    /**
+     * Indicates if loading of the provider is deferred.
+     *
+     * @var bool
+     */
+    protected $defer = false;
 
-	/**
-	 * Register the service provider.
-	 *
-	 * @return void
-	 */
-	public function register()
-	{
+    /**
+     * Register the service provider.
+     *
+     * @return void
+     */
+    public function register()
+    {
         $this->registerAsyncCommand();
     }
 
@@ -29,7 +29,7 @@ class AsyncServiceProvider extends ServiceProvider {
     public function boot(){
         $manager = $this->app['queue'];
         $this->registerAsyncConnector($manager);
-	}
+    }
 
     /**
      * Register the queue listener console command.
@@ -63,13 +63,13 @@ class AsyncServiceProvider extends ServiceProvider {
     }
 
     /**
-	 * Get the services provided by the provider.
-	 *
-	 * @return array
-	 */
-	public function provides()
-	{
-		return array('command.queue.async');
-	}
+     * Get the services provided by the provider.
+     *
+     * @return array
+     */
+    public function provides()
+    {
+        return array('command.queue.async');
+    }
 
 }

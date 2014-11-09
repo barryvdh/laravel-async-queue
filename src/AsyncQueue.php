@@ -60,7 +60,7 @@ class AsyncQueue extends Queue implements QueueInterface
      */
     public function startProcess($jobId)
     {
-        $command = $this->getCommand();
+        $command = $this->getCommand($jobId);
         $cwd = $this->container['path.base'];
 
         $process = new Process($command, $cwd);

@@ -5,6 +5,7 @@ namespace Barryvdh\Queue;
 use Barryvdh\Queue\Models\Job;
 use Illuminate\Queue\Queue;
 use Illuminate\Queue\QueueInterface;
+use SebastianBergmann\Environment\Runtime;
 use Symfony\Component\Process\Process;
 
 class AsyncQueue extends Queue implements QueueInterface
@@ -59,18 +60,45 @@ class AsyncQueue extends Queue implements QueueInterface
      */
     public function startProcess($jobId)
     {
-        $environment = $this->container->environment();
+        $command = $this->getCommand();
         $cwd = $this->container['path.base'];
-        $string = 'php artisan queue:async %d --env=%s ';
+
+        $process = new Process($command, $cwd);
+        $process->run();
+    }
+
+    /**
+     * Get the Artisan command as a string for the job id.
+     *
+     * @param int $jobId
+     *
+     * @return string
+     */
+    protected function getCommand($jobId)
+    {
+        $string = $this->getBinary().' artisan queue:async %d --env=%s ';
+
         if (defined('PHP_WINDOWS_VERSION_BUILD')) {
             $string = 'start /B '.$string.' > NUL';
         } else {
             $string = 'nohup '.$string.' > /dev/null 2>&1 &';
         }
 
-        $command = sprintf($string, $jobId, $environment);
-        $process = new Process($command, $cwd);
-        $process->run();
+        $environment = $this->container->environment();
+
+        return sprintf($string, $jobId, $environment);
+    }
+
+    /**
+     * Get the php binary path.
+     *
+     * @return string
+     */
+    protected function getBinary()
+    {
+        $runtime = new Runtime();
+
+        return $runtime->getBinary();
     }
 
     /**

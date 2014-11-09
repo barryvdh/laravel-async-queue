@@ -3,9 +3,10 @@
 namespace Barryvdh\Queue;
 
 use Barryvdh\Queue\Models\Job;
+use Barryvdh\Queue\Process\AsyncProcess;
+use Barryvdh\Queue\Process\PhpFinder;
 use Illuminate\Queue\Queue;
 use Illuminate\Queue\QueueInterface;
-use Symfony\Component\Process\PhpExecutableFinder;
 
 class AsyncQueue extends Queue implements QueueInterface
 {
@@ -75,22 +76,12 @@ class AsyncQueue extends Queue implements QueueInterface
      */
     protected function getCommand($jobId)
     {
-        $command = $this->getBinary().' artisan queue:async %d --env=%s ';
+        $finder = new PhpFinder();
+
+        $command = $finder->findForShell().' artisan queue:async %d --env=%s ';
         $environment = $this->container->environment();
 
         return sprintf($command, $jobId, $environment);
-    }
-
-    /**
-     * Get the php binary path.
-     *
-     * @return string
-     */
-    protected function getBinary()
-    {
-        $finder = new PhpExecutableFinder();
-
-        return escapeshellarg($finder->find());
     }
 
     /**

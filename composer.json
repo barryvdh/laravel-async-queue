@@ -17,6 +17,5 @@
         "psr-4": {
             "Barryvdh\\Queue\\": "src/"
         }
-    },
-    "minimum-stability": "dev"
+    }
 }

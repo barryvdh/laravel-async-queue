@@ -5,10 +5,10 @@ namespace Barryvdh\Queue;
 use Barryvdh\Queue\Models\Job;
 use Barryvdh\Queue\Process\AsyncProcess;
 use Barryvdh\Queue\Process\PhpFinder;
+use Illuminate\Contracts\Queue\Queue as QueueContract;
 use Illuminate\Queue\Queue;
-use Illuminate\Queue\QueueInterface;
 
-class AsyncQueue extends Queue implements QueueInterface
+class AsyncQueue extends Queue implements QueueContract
 {
     /**
      * Push a new job onto the queue.
@@ -124,7 +124,7 @@ class AsyncQueue extends Queue implements QueueInterface
      *
      * @return void
      */
-    public function pushRaw($payload, $queue = null, array $options = array())
+    public function pushRaw($payload, $queue = null, array $options = [])
     {
         // do nothing
     }

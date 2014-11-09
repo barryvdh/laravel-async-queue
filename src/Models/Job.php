@@ -23,5 +23,5 @@ class Job extends Model
     const STATUS_FINISHED = 3;
 
     protected $table = 'laq_async_queue';
-    protected $guarded = array('id', 'created_at', 'updated_at');
+    protected $guarded = ['id', 'created_at', 'updated_at'];
 }

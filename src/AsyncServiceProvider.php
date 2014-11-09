@@ -4,6 +4,8 @@ namespace Barryvdh\Queue;
 
 use Barryvdh\Queue\Connectors\AsyncConnector;
 use Barryvdh\Queue\Console\AsyncCommand;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Queue\QueueManager;
 use Illuminate\Support\ServiceProvider;
 
 class AsyncServiceProvider extends ServiceProvider
@@ -22,8 +24,9 @@ class AsyncServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $manager = $this->app['queue'];
-        $this->registerAsyncConnector($manager);
+        $this->registerAsyncConnector($this->app['queue']);
+
+        $this->commands('command.queue.async');
     }
 
     /**
@@ -39,17 +42,15 @@ class AsyncServiceProvider extends ServiceProvider
     /**
      * Register the queue listener console command.
      *
-     * @param \Illuminate\Foundation\Application $app
+     * @param \Illuminate\Contracts\Foundation\Application $app
      *
      * @return void
      */
-    protected function registerAsyncCommand($app)
+    protected function registerAsyncCommand(Application $app)
     {
-        $app['command.queue.async'] = $app->share(function ($app) {
-             return new AsyncCommand();
+        $app->singleton('command.queue.async', function ($app) {
+            return new AsyncCommand();
         });
-
-        $this->commands('command.queue.async');
     }
 
     /**
@@ -59,7 +60,7 @@ class AsyncServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    protected function registerAsyncConnector($manager)
+    protected function registerAsyncConnector(QueueManager $manager)
     {
         $manager->addConnector('async', function () {
             return new AsyncConnector();
@@ -73,6 +74,6 @@ class AsyncServiceProvider extends ServiceProvider
      */
     public function provides()
     {
-        return array('command.queue.async');
+        return ['command.queue.async'];
     }
 }

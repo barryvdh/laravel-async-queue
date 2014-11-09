@@ -1,6 +1,6 @@
 <?php
 
-namespace Barryvdh\Queue;
+namespace Barryvdh\Queue\Process;
 
 use Symfony\Component\Process\PhpExecutableFinder;
 

@@ -1,4 +1,4 @@
-# Laravel 4 Async Queue Driver
+# Laravel 5 Async Queue Driver
 
 ## Push a function/closure to the background.
 

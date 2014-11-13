@@ -3,12 +3,12 @@
 namespace Barryvdh\Queue;
 
 use Barryvdh\Queue\Models\Job;
+use Barryvdh\Queue\Process\AsyncProcess;
+use Barryvdh\Queue\Process\PhpFinder;
+use Illuminate\Contracts\Queue\Queue as QueueContract;
 use Illuminate\Queue\Queue;
-use Illuminate\Queue\QueueInterface;
-use SebastianBergmann\Environment\Runtime;
-use Symfony\Component\Process\Process;
 
-class AsyncQueue extends Queue implements QueueInterface
+class AsyncQueue extends Queue implements QueueContract
 {
     /**
      * Push a new job onto the queue.
@@ -63,8 +63,8 @@ class AsyncQueue extends Queue implements QueueInterface
         $command = $this->getCommand($jobId);
         $cwd = $this->container['path.base'];
 
-        $process = new Process($command, $cwd);
-        $process->run();
+        $process = new AsyncProcess($command, $cwd);
+        $process->start();
     }
 
     /**
@@ -76,29 +76,12 @@ class AsyncQueue extends Queue implements QueueInterface
      */
     protected function getCommand($jobId)
     {
-        $string = $this->getBinary().' artisan queue:async %d --env=%s ';
+        $finder = new PhpFinder();
 
-        if (defined('PHP_WINDOWS_VERSION_BUILD')) {
-            $string = 'start /B '.$string.' > NUL';
-        } else {
-            $string = 'nohup '.$string.' > /dev/null 2>&1 &';
-        }
-
+        $command = $finder->findForShell().' artisan queue:async %d --env=%s ';
         $environment = $this->container->environment();
 
-        return sprintf($string, $jobId, $environment);
-    }
-
-    /**
-     * Get the php binary path.
-     *
-     * @return string
-     */
-    protected function getBinary()
-    {
-        $runtime = new Runtime();
-
-        return $runtime->getBinary();
+        return sprintf($command, $jobId, $environment);
     }
 
     /**
@@ -141,7 +124,7 @@ class AsyncQueue extends Queue implements QueueInterface
      *
      * @return void
      */
-    public function pushRaw($payload, $queue = null, array $options = array())
+    public function pushRaw($payload, $queue = null, array $options = [])
     {
         // do nothing
     }

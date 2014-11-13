@@ -44,8 +44,8 @@ class AsyncCommand extends Command
      */
     protected function getArguments()
     {
-        return array(
-            array('job_id', InputArgument::REQUIRED, 'The Job ID'),
-        );
+        return [
+            ['job_id', InputArgument::REQUIRED, 'The Job ID'],
+        ];
     }
 }

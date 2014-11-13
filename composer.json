@@ -15,6 +15,9 @@
         "symfony/process": "~2.3"
     },
     "autoload": {
+        "classmap": [
+            "src/migrations"
+        ],
         "psr-4": {
             "Barryvdh\\Queue\\": "src/"
         }

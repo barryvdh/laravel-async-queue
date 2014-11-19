@@ -22,8 +22,9 @@ class AsyncServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $manager = $this->app['queue'];
-        $this->registerAsyncConnector($manager);
+        $this->registerAsyncConnector($this->app['queue']);
+
+        $this->commands('command.queue.async');
     }
 
     /**
@@ -48,8 +49,6 @@ class AsyncServiceProvider extends ServiceProvider
         $app['command.queue.async'] = $app->share(function ($app) {
              return new AsyncCommand();
         });
-
-        $this->commands('command.queue.async');
     }
 
     /**

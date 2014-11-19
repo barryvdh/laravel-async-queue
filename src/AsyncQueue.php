@@ -2,11 +2,10 @@
 namespace Barryvdh\Queue;
 
 use Barryvdh\Queue\Models\Job;
-use Illuminate\Queue\Queue;
-use Illuminate\Queue\QueueInterface;
+use Illuminate\Queue\SyncQueue;
 use Symfony\Component\Process\PhpExecutableFinder;
 
-class AsyncQueue extends Queue implements QueueInterface
+class AsyncQueue extends SyncQueue
 {
     /** @var PhpExecutableFinder  */
     protected $phpfinder;
@@ -122,29 +121,4 @@ class AsyncQueue extends Queue implements QueueInterface
         return 0;
     }
 
-    /**
-     * Pop the next job off of the queue.
-     *
-     * @param string|null $queue
-     *
-     * @return void
-     */
-    public function pop($queue = null)
-    {
-        // do nothing
-    }
-
-    /**
-     * Push a raw payload onto the queue.
-     *
-     * @param string      $payload
-     * @param string|null $queue
-     * @param array       $options
-     *
-     * @return void
-     */
-    public function pushRaw($payload, $queue = null, array $options = array())
-    {
-        // do nothing
-    }
 }

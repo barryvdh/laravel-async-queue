@@ -1,4 +1,4 @@
-# Laravel 4 Async Queue Driver
+# Laravel 4/5 Async Queue Driver
 
 ## Push a function/closure to the background.
 
@@ -10,9 +10,9 @@ This package is more usable as an alternative for running incidental tasks in th
 
 ### Install
 
-Add the package to the require section of your composer.json and run `composer update`
+Require the latest version of this package with Composer
 
-    "barryvdh/laravel-async-queue": "0.2.x"
+    composer require barryvdh/laravel-async-queue
 
 Add the Service Provider to the providers array in config/app.php
 

@@ -1,6 +1,6 @@
 {
     "name": "barryvdh/laravel-async-queue",
-    "description": "",
+    "description": "Async Queue Driver for Laravel (Push to background)",
     "authors": [
         {
             "name": "Barry vd. Heuvel",
@@ -9,8 +9,8 @@
     ],
     "require": {
         "php": ">=5.3.0",
-        "illuminate/support": "~4.0",
-        "illuminate/console": "~4.0",
+        "illuminate/support": "4.x|5.0.x",
+        "illuminate/console": "4.x|5.0.x",
         "symfony/process": "~2.3"
     },
     "autoload": {

@@ -1,15 +1,20 @@
 <?php
-
 namespace Barryvdh\Queue;
 
 use Barryvdh\Queue\Models\Job;
 use Illuminate\Queue\Queue;
 use Illuminate\Queue\QueueInterface;
-use SebastianBergmann\Environment\Runtime;
-use Symfony\Component\Process\Process;
+use Symfony\Component\Process\PhpExecutableFinder;
 
 class AsyncQueue extends Queue implements QueueInterface
 {
+    /** @var PhpExecutableFinder  */
+    protected $phpfinder;
+
+    public function __construct(){
+        $this->phpfinder = new PhpExecutableFinder();
+    }
+
     /**
      * Push a new job onto the queue.
      *
@@ -60,11 +65,8 @@ class AsyncQueue extends Queue implements QueueInterface
      */
     public function startProcess($jobId)
     {
-        $command = $this->getCommand($jobId);
-        $cwd = $this->container['path.base'];
-
-        $process = new Process($command, $cwd);
-        $process->run();
+        chdir($this->container['path.base']);
+        exec($this->getCommand($jobId));
     }
 
     /**
@@ -76,29 +78,29 @@ class AsyncQueue extends Queue implements QueueInterface
      */
     protected function getCommand($jobId)
     {
-        $string = $this->getBinary().' artisan queue:async %d --env=%s ';
+        $cmd = '%s artisan queue:async %d --env=%s';
+        $cmd = $this->getBackgroundCommand($cmd);
 
-        if (defined('PHP_WINDOWS_VERSION_BUILD')) {
-            $string = 'start /B '.$string.' > NUL';
-        } else {
-            $string = 'nohup '.$string.' > /dev/null 2>&1 &';
-        }
-
+        $php = $this->getPhpBinary();
         $environment = $this->container->environment();
 
-        return sprintf($string, $jobId, $environment);
+        return sprintf($cmd, $php, $jobId, $environment);
     }
 
-    /**
-     * Get the php binary path.
-     *
-     * @return string
-     */
-    protected function getBinary()
+    protected function getPhpBinary()
     {
-        $runtime = new Runtime();
+        $path = escapeshellarg($this->phpfinder->find(false));
+        $args = implode(' ', $this->phpfinder->findArguments());
+        return trim($path.' '.$args);
+    }
 
-        return $runtime->getBinary();
+    protected function getBackgroundCommand($cmd)
+    {
+        if (defined('PHP_WINDOWS_VERSION_BUILD')) {
+            return 'start /B '.$cmd.' > NUL';
+        } else {
+            return $cmd.' > /dev/null 2>&1 &';
+        }
     }
 
     /**

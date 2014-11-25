@@ -34,6 +34,7 @@ You should now be able to use the async driver in config/queue.php
         ...
         'async' => array(
             'driver' => 'async',
+            'binary' => 'php',  // Optional: path to php binary, defaults to 'php'. Set to null to autodetect.
         ),
         ...
     }

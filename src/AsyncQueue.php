@@ -7,11 +7,14 @@ use Symfony\Component\Process\PhpExecutableFinder;
 
 class AsyncQueue extends SyncQueue
 {
-    /** @var PhpExecutableFinder  */
-    protected $phpfinder;
+    protected $binary;
 
-    public function __construct(){
-        $this->phpfinder = new PhpExecutableFinder();
+    public function __construct(array $config)
+    {
+        $this->binary = array_key_exists('binary', $config) ? $config['binary'] : 'phpauto';
+        if (!$this->binary) {
+            $this->binary = $this->getPhpBinary();
+        }
     }
 
     /**
@@ -80,16 +83,16 @@ class AsyncQueue extends SyncQueue
         $cmd = '%s artisan queue:async %d --env=%s';
         $cmd = $this->getBackgroundCommand($cmd);
 
-        $php = $this->getPhpBinary();
         $environment = $this->container->environment();
 
-        return sprintf($cmd, $php, $jobId, $environment);
+        return sprintf($cmd, $this->binary, $jobId, $environment);
     }
 
     protected function getPhpBinary()
     {
-        $path = escapeshellarg($this->phpfinder->find(false));
-        $args = implode(' ', $this->phpfinder->findArguments());
+        $phpfinder = new PhpExecutableFinder();
+        $path = escapeshellarg($phpfinder->find(false));
+        $args = implode(' ', $phpfinder->findArguments());
         return trim($path.' '.$args);
     }
 

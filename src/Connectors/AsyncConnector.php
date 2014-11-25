@@ -16,6 +16,6 @@ class AsyncConnector implements ConnectorInterface
      */
     public function connect(array $config)
     {
-        return new AsyncQueue();
+        return new AsyncQueue($config);
     }
 }

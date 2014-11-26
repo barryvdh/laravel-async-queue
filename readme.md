@@ -34,7 +34,18 @@ You should now be able to use the async driver in config/queue.php
         ...
         'async' => array(
             'driver' => 'async',
-            'binary' => 'php',  // Optional: path to php binary, defaults to 'php'. Set to null to autodetect.
+        ),
+        ...
+    }
+
+By default, `php` is used as the binary path to PHP. You can change this by adding the `binary` option to the queue config. You can also add extra arguments (for HHVM for example)
+
+    'connections' => array(
+        ...
+        'async' => array(
+            'driver' => 'async',
+            'binary' => 'php',
+            'binary_args' => '',
         ),
         ...
     }

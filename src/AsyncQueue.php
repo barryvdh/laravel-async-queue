@@ -3,18 +3,18 @@ namespace Barryvdh\Queue;
 
 use Barryvdh\Queue\Models\Job;
 use Illuminate\Queue\SyncQueue;
-use Symfony\Component\Process\PhpExecutableFinder;
 
 class AsyncQueue extends SyncQueue
 {
-    protected $binary;
+    /** @var array */
+    protected $config;
 
+    /**
+     * @param array $config
+     */
     public function __construct(array $config)
     {
-        $this->binary = array_key_exists('binary', $config) ? $config['binary'] : 'phpauto';
-        if (!$this->binary) {
-            $this->binary = $this->getPhpBinary();
-        }
+        $this->config = $config;
     }
 
     /**
@@ -83,16 +83,24 @@ class AsyncQueue extends SyncQueue
         $cmd = '%s artisan queue:async %d --env=%s';
         $cmd = $this->getBackgroundCommand($cmd);
 
+        $binary = $this->getPhpBinary();
         $environment = $this->container->environment();
 
-        return sprintf($cmd, $this->binary, $jobId, $environment);
+        return sprintf($cmd, $binary, $jobId, $environment);
     }
 
+    /**
+     * Get the escaped PHP Binary from the configuration
+     *
+     * @return string
+     */
     protected function getPhpBinary()
     {
-        $phpfinder = new PhpExecutableFinder();
-        $path = escapeshellarg($phpfinder->find(false));
-        $args = implode(' ', $phpfinder->findArguments());
+        $path = escapeshellarg($this->config['binary']);
+        $args = $this->config['binary_args'];
+        if(is_array($args)){
+            $args = implode(' ', $args);
+        }
         return trim($path.' '.$args);
     }
 

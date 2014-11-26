@@ -8,6 +8,16 @@ use Illuminate\Queue\Connectors\ConnectorInterface;
 class AsyncConnector implements ConnectorInterface
 {
     /**
+     * Default configuration
+     *
+     * @var array
+     */
+    protected $defaults = array(
+        'binary'        => 'php',
+        'binary_args'   => '',
+    );
+
+    /**
      * Establish a queue connection.
      *
      * @param array $config
@@ -16,6 +26,7 @@ class AsyncConnector implements ConnectorInterface
      */
     public function connect(array $config)
     {
+        $config = array_merge($this->defaults, $config);
         return new AsyncQueue($config);
     }
 }

@@ -46,6 +46,7 @@ class AsyncJob extends SyncJob
 
         // Mark job as started
         $this->job->status = Job::STATUS_STARTED;
+        $this->job->retries++;
         $this->job->save();
 
         // Fire the actual job
@@ -78,7 +79,6 @@ class AsyncJob extends SyncJob
     {
         // Update the Job status
         $this->job->status = Job::STATUS_OPEN;
-        $this->job->retries++;
         $this->job->save();
 
         // Wait for the delay
@@ -97,7 +97,7 @@ class AsyncJob extends SyncJob
      */
     public function attempts()
     {
-        return (int) $this->job->retries + 1;
+        return (int) $this->job->retries;
     }
 
     /**

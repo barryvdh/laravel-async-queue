@@ -38,7 +38,7 @@ class AsyncJob extends SyncJob
         $payload = $this->parsePayload($this->getRawBody());
 
         // If we have to wait, sleep until our time has come
-        if ($this->job->delay) {
+        if ($this->job->delay && $this->attempts() == 0) {
             $this->job->status = Job::STATUS_WAITING;
             $this->job->save();
             sleep($this->job->delay);

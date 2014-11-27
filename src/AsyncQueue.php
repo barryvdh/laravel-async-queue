@@ -28,10 +28,10 @@ class AsyncQueue extends SyncQueue
      */
     public function push($job, $data = '', $queue = null)
     {
-        $id = $this->storeJob($job, $data);
+        $id = $this->storeJob($job, $data, 0);
         $this->startProcess($id, 0);
 
-        return 0;
+        return $id;
     }
 
     /**
@@ -62,31 +62,33 @@ class AsyncQueue extends SyncQueue
      * Make a Process for the Artisan command for the job id.
      *
      * @param int $jobId
+     * @param int $delay
      *
      * @return void
      */
-    public function startProcess($jobId)
+    public function startProcess($jobId, $delay = 0)
     {
         chdir($this->container['path.base']);
-        exec($this->getCommand($jobId));
+        exec($this->getCommand($jobId, $delay));
     }
 
     /**
      * Get the Artisan command as a string for the job id.
      *
      * @param int $jobId
+     * @param int $delay
      *
      * @return string
      */
-    protected function getCommand($jobId)
+    protected function getCommand($jobId, $delay = 0)
     {
-        $cmd = '%s artisan queue:async %d --env=%s';
+        $cmd = '%s artisan queue:async %d --env=%s --delay=%d';
         $cmd = $this->getBackgroundCommand($cmd);
 
         $binary = $this->getPhpBinary();
         $environment = $this->container->environment();
 
-        return sprintf($cmd, $binary, $jobId, $environment);
+        return sprintf($cmd, $binary, $jobId, $environment, $delay);
     }
 
     /**
@@ -127,9 +129,9 @@ class AsyncQueue extends SyncQueue
     {
         $delay = $this->getSeconds($delay);
         $id = $this->storeJob($job, $data, $delay);
-        $this->startProcess($id);
+        $this->startProcess($id, $delay);
 
-        return 0;
+        return $id;
     }
 
 }

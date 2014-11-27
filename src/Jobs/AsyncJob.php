@@ -20,13 +20,11 @@ class AsyncJob extends SyncJob
      *
      * @param \Illuminate\Container\Container $container
      * @param \Barryvdh\Queue\Models\Job      $job
-     *
-     * @return void
      */
     public function __construct(Container $container, Job $job)
     {
-        $this->job = $job;
         $this->container = $container;
+        $this->job = $job;
     }
 
     /**
@@ -37,7 +35,7 @@ class AsyncJob extends SyncJob
     public function fire()
     {
         // Get the payload from the job
-        $payload = $this->parsePayload($this->job->payload);
+        $payload = $this->parsePayload($this->getRawBody());
 
         // If we have to wait, sleep until our time has come
         if ($this->job->delay) {
@@ -61,6 +59,48 @@ class AsyncJob extends SyncJob
     }
 
     /**
+     * Get the raw body string for the job.
+     *
+     * @return string
+     */
+    public function getRawBody()
+    {
+        return $this->job->payload;
+    }
+
+    /**
+     * Release the job back into the queue.
+     *
+     * @param  int   $delay
+     * @return void
+     */
+    public function release($delay = 0)
+    {
+        // Update the Job status
+        $this->job->status = Job::STATUS_OPEN;
+        $this->job->retries++;
+        $this->job->save();
+
+        // Wait for the delay
+        if ($delay) {
+            sleep($this->getSeconds($delay));
+        }
+
+        // Fire again
+        $this->fire();
+    }
+
+    /**
+     * Get the number of times the job has been attempted.
+     *
+     * @return int
+     */
+    public function attempts()
+    {
+        return (int) $this->job->retries + 1;
+    }
+
+    /**
      * Delete the job from the queue.
      *
      * @return void
@@ -81,5 +121,15 @@ class AsyncJob extends SyncJob
     protected function parsePayload($payload)
     {
         return json_decode($payload, true);
+    }
+
+    /**
+     * Get the job identifier.
+     *
+     * @return string
+     */
+    public function getJobId()
+    {
+        return $this->job->id;
     }
 }

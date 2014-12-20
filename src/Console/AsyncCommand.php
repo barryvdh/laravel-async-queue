@@ -2,9 +2,9 @@
 
 namespace Barryvdh\Queue\Console;
 
-use Barryvdh\Queue\Jobs\AsyncJob;
-use Barryvdh\Queue\Models\Job;
+use Barryvdh\Queue\AsyncQueue;
 use Illuminate\Console\Command;
+use Illuminate\Queue\Worker;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 
@@ -22,7 +22,25 @@ class AsyncCommand extends Command
      *
      * @var string
      */
-    protected $description = 'Run a queue from the database';
+    protected $description = 'Run a queue job from the database';
+    
+    /**
+	 * The queue worker instance.
+	 *
+	 * @var \Illuminate\Queue\Worker
+	 */
+	protected $worker;
+	/**
+	 * Create a new queue listen command.
+	 *
+	 * @param  \Illuminate\Queue\Worker  $worker
+	 * @return void
+	 */
+	public function __construct(Worker $worker)
+	{
+		parent::__construct();
+		$this->worker = $worker;
+	}
 
     /**
      * Execute the console command.
@@ -31,15 +49,37 @@ class AsyncCommand extends Command
      */
     public function fire()
     {
-        $item = Job::findOrFail($this->argument('job_id'));
+        $queue = $this->option('queue');
+        $id = $this->argument('id');
+        $connection = $this->argument('connection');
+        $tries = $this->option('tries');
+        
+        $this->processJob(
+			$connection, $queue, $delay, $tries
+		);
+    }
+    
+    /**
+     *  Process the job
+     * 
+     */
+    protected function processJob($connectionName, $queue, $delay, $maxTries)
+    {
+        $connection = $this->worker->getManager()->connection($connectionName);
+        
+		$job = $this->queue->getJobFromId($queue, $id);
+		// If we're able to pull a job off of the stack, we will process it and
+		// then immediately return back out. If there is no job on the queue
+		// we will "sleep" the worker for the specified number of seconds.
+		if ( ! is_null($job))
+		{
+			return $this->process(
+				$this->manager->getName($connectionName), $job, $maxTries, $delay
+			);
+		}
 
-        if ($delay = (int) $this->option('delay')) {
-            sleep($delay);
-        }
-
-        $job = new AsyncJob($this->laravel, $item);
-
-        $job->fire();
+		return ['job' => null, 'failed' => false];
+    
     }
 
     /**
@@ -50,7 +90,9 @@ class AsyncCommand extends Command
     protected function getArguments()
     {
         return array(
-            array('job_id', InputArgument::REQUIRED, 'The Job ID'),
+            array('id', InputArgument::REQUIRED, 'The Job ID'),
+            
+            array('connection', InputArgument::OPTIONAL, 'The name of connection'),
         );
     }
 
@@ -62,7 +104,9 @@ class AsyncCommand extends Command
     protected function getOptions()
     {
         return array(
-            array('delay', 'D', InputOption::VALUE_OPTIONAL, 'The delay in seconds', 0),
+            array('queue', null, InputOption::VALUE_OPTIONAL, 'The queue name', null),
+            
+            array('delay', null, InputOption::VALUE_OPTIONAL, 'Amount of time to delay failed jobs', 0),
         );
     }
 }

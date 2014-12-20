@@ -34,20 +34,19 @@ class AsyncServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->registerAsyncCommand($this->app);
+        $this->registerAsyncCommand();
     }
 
     /**
      * Register the queue listener console command.
      *
-     * @param \Illuminate\Foundation\Application $app
      *
      * @return void
      */
-    protected function registerAsyncCommand($app)
+    protected function registerAsyncCommand()
     {
-        $app['command.queue.async'] = $app->share(function ($app) {
-             return new AsyncCommand();
+        $this->app->singleton('command.queue.async', function () {
+             return new AsyncCommand($this->app['command.queue.work']);
         });
     }
 
@@ -61,7 +60,7 @@ class AsyncServiceProvider extends ServiceProvider
     protected function registerAsyncConnector($manager)
     {
         $manager->addConnector('async', function () {
-            return new AsyncConnector();
+            return new AsyncConnector($this->app['db']);
         });
     }
 

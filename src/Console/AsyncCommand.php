@@ -69,17 +69,18 @@ class AsyncCommand extends Command
      */
     protected function processJob($connectionName, $queue, $id, $delay, $maxTries)
     {
-        $connection = $this->worker->getManager()->connection($connectionName);
+        $manager = $this->worker->getManager();
+        $connection = $manager->connection($connectionName);
         
 		$job = $connection->getJobFromId($queue, $id);
-		
+
 		// If we're able to pull a job off of the stack, we will process it and
 		// then immediately return back out. If there is no job on the queue
 		// we will "sleep" the worker for the specified number of seconds.
 		if ( ! is_null($job))
 		{
-			return $this->process(
-				$this->manager->getName($connectionName), $job, $maxTries, $delay
+			return $this->worker->process(
+				$manager->getName($connectionName), $job, $maxTries, $delay
 			);
 		}
 

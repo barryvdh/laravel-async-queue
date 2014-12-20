@@ -17,7 +17,6 @@ class AsyncConnector extends DatabaseConnector
      */
     public function connect(array $config)
     {
-        var_dump($config);
         return new AsyncQueue(
 			$this->connections->connection(array_get($config, 'connection')),
 			$config['table'],

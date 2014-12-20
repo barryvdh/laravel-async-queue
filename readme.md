@@ -1,4 +1,4 @@
-# Laravel 4/5 Async Queue Driver
+# Laravel 5 Async Queue Driver
 
 ## Push a function/closure to the background.
 
@@ -6,7 +6,7 @@ Just like the 'sync' driver, this is not a real queue driver. It is always fired
 The only difference is that the closure is sent to the background without waiting for the response.
 This package is more usable as an alternative for running incidental tasks in the background, without setting up a 'real' queue driver.
 
-> **Note:** If you are coming from 0.1.0 (or dev-master), you will need to run the migrations, since the new versions uses a database to store the queue.
+> **Note:** This is using the DatabaseQueue, so make sure you set that up first, including migrations.
 
 ### Install
 

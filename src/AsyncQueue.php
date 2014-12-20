@@ -98,7 +98,7 @@ class AsyncQueue extends SyncQueue
      */
     protected function getPhpBinary()
     {
-        $path = escapeshellarg($this->config['binary']);
+        $path = $this->config['binary'];
         if (!defined('PHP_WINDOWS_VERSION_BUILD')) {
             $path = escapeshellarg($path);
         }

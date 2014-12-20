@@ -161,7 +161,7 @@ class AsyncQueue extends DatabaseQueue
      */
     protected function getPhpBinary()
     {
-        $path = escapeshellarg($this->binary);
+        $path = $this->binary;
         if (!defined('PHP_WINDOWS_VERSION_BUILD')) {
             $path = escapeshellarg($path);
         }

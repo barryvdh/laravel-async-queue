@@ -3,7 +3,7 @@ namespace Barryvdh\Queue;
 
 use Illuminate\Database\Connection;
 use Illuminate\Queue\DatabaseQueue;
-use Illuminate\Queue\DatabaseQueue\DatabaseJob;
+use Illuminate\Queue\Jobs\DatabaseJob;
 
 class AsyncQueue extends DatabaseQueue
 {

@@ -12,6 +12,9 @@ class AsyncQueue extends DatabaseQueue
     
     /** @var string */
     protected $binaryArgs;
+    
+    /** @var string */
+    protected $connectionName;
 
     /**
      * @param  \Illuminate\Database\Connection  $database
@@ -21,11 +24,12 @@ class AsyncQueue extends DatabaseQueue
      * @param  string  $binary
      * @param  string|array  $binaryArgs
      */
-    public function __construct(Connection $database, $table, $default = 'default', $expire = 60, $binary = 'php', $binaryArgs = '')
+    public function __construct(Connection $database, $table, $default = 'default', $expire = 60, $binary = 'php', $binaryArgs = '', $connectionName = '')
     {
         parent::__construct($database, $table, $default, $expire);
         $this->binary = $binary;
         $this->binaryArgs = $binaryArgs;
+        $this->connectionName = $connectionName;
     }
 
     /**
@@ -144,14 +148,14 @@ class AsyncQueue extends DatabaseQueue
      */
     protected function getCommand($queue, $id)
     {
-        $connection = null;
-        $cmd = '%s artisan queue:async %d %d --env=%s --queue=%s';
+        $connection = $this->connectionName;
+        $cmd = '%s artisan queue:async %d %s --env=%s --queue=%s';
         $cmd = $this->getBackgroundCommand($cmd);
 
         $binary = $this->getPhpBinary();
         $environment = $this->container->environment();
 
-        return sprintf($cmd, $binary, $id, $connection, $environment, $queue);
+        return sprintf($cmd, $binary, $id, $connection, $environment, $this->getQueue($queue));
     }
 
     /**

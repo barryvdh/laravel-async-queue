@@ -46,7 +46,7 @@ class AsyncServiceProvider extends ServiceProvider
     protected function registerAsyncCommand()
     {
         $this->app->singleton('command.queue.async', function () {
-             return new AsyncCommand($this->app['command.queue.work']);
+             return new AsyncCommand($this->app['queue.worker']);
         });
     }
 

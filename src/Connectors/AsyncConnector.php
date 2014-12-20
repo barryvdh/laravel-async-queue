@@ -5,7 +5,7 @@ namespace Barryvdh\Queue\Connectors;
 use Barryvdh\Queue\AsyncQueue;
 use Illuminate\Queue\Connectors\DatabaseConnector;
 
-class AsyncConnector implements DatabaseConnector
+class AsyncConnector extends DatabaseConnector
 {
 
     /**

@@ -1,7 +1,9 @@
 <?php
 namespace Barryvdh\Queue;
 
+use Illuminate\Database\Connection;
 use Illuminate\Queue\DatabaseQueue;
+use Illuminate\Queue\DatabaseQueue\DatabaseJob;
 
 class AsyncQueue extends DatabaseQueue
 {
@@ -99,7 +101,7 @@ class AsyncQueue extends DatabaseQueue
 	 * @param  string|null  $queue
 	 * @return \StdClass|null
 	 */
-	protected function getJobFromId($queue, $id)
+	public function getJobFromId($queue, $id)
 	{
 		$this->database->beginTransaction();
 		$job = $this->database->table($this->table)
@@ -142,13 +144,14 @@ class AsyncQueue extends DatabaseQueue
      */
     protected function getCommand($queue, $id)
     {
+        $connection = null;
         $cmd = '%s artisan queue:async %d %d --env=%s --queue=%s';
         $cmd = $this->getBackgroundCommand($cmd);
 
         $binary = $this->getPhpBinary();
         $environment = $this->container->environment();
 
-        return sprintf($cmd, $binary, $jobId, $environment, $queue);
+        return sprintf($cmd, $binary, $id, $connection, $environment, $queue);
     }
 
     /**
@@ -158,7 +161,7 @@ class AsyncQueue extends DatabaseQueue
      */
     protected function getPhpBinary()
     {
-        $path = escapeshellarg($thisbinary);
+        $path = escapeshellarg($this->binary);
         if (!defined('PHP_WINDOWS_VERSION_BUILD')) {
             $path = escapeshellarg($path);
         }

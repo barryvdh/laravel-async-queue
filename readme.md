@@ -18,13 +18,10 @@ Add the Service Provider to the providers array in config/app.php
 
     'Barryvdh\Queue\AsyncServiceProvider',
 
-You need to run the migrations for this package
+You need to create the migration table for queues and run it.
 
-    $ php artisan migrate --package="barryvdh/laravel-async-queue"
-
-Or publish them, so they are copied to your regular migrations
-
-    $ php artisan migrate:publish barryvdh/laravel-async-queue
+    $ php artisan queue:table
+    $ php artisan migrate
 
 You should now be able to use the async driver in config/queue.php
 

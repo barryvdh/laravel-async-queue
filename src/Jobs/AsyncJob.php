@@ -9,6 +9,13 @@ use Illuminate\Queue\Jobs\SyncJob;
 class AsyncJob extends SyncJob
 {
     /**
+	 * Indicates if the job has been deleted.
+	 *
+	 * @var bool
+	 */
+	protected $deleted = false;
+	
+    /**
      * The job model.
      *
      * @var Job

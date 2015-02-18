@@ -3,6 +3,7 @@ namespace Barryvdh\Queue;
 
 use Barryvdh\Queue\Models\Job;
 use Illuminate\Queue\SyncQueue;
+use Symfony\Component\Process\Process;
 
 class AsyncQueue extends SyncQueue
 {
@@ -68,8 +69,11 @@ class AsyncQueue extends SyncQueue
      */
     public function startProcess($jobId, $delay = 0)
     {
-        chdir($this->container['path.base']);
-        exec($this->getCommand($jobId, $delay));
+        $command = $this->getCommand($jobId, $delay);
+        $cwd = $this->container['path.base'];
+
+        $process = new Process($command, $cwd);
+        $process->run();
     }
 
     /**

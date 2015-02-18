@@ -4,6 +4,7 @@ namespace Barryvdh\Queue;
 use Illuminate\Database\Connection;
 use Illuminate\Queue\DatabaseQueue;
 use Illuminate\Queue\Jobs\DatabaseJob;
+use Symfony\Component\Process\Process;
 
 class AsyncQueue extends DatabaseQueue
 {
@@ -134,8 +135,11 @@ class AsyncQueue extends DatabaseQueue
      */
     public function startProcess($queue, $id)
     {
-        chdir($this->container['path.base']);
-        exec($this->getCommand($queue, $id));
+        $command = $this->getCommand($queue, $id);
+        $cwd = base_path();
+
+        $process = new Process($command, $cwd);
+        $process->run();
     }
 
     /**

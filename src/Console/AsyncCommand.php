@@ -49,16 +49,11 @@ class AsyncCommand extends Command
      */
     public function fire()
     {
-        $queue = $this->option('queue');
-        
-        
         $id = $this->argument('id');
         $connection = $this->argument('connection');
-        $delay = $this->option('delay');
-        $tries = $this->option('tries');
         
         $this->processJob(
-			$connection, $queue, $id, $delay, $tries
+			$connection, $id
 		);
     }
     
@@ -67,18 +62,20 @@ class AsyncCommand extends Command
      *  Process the job
      * 
      */
-    protected function processJob($connectionName, $queue, $id, $delay, $maxTries)
+    protected function processJob($connectionName, $id)
     {
         $manager = $this->worker->getManager();
         $connection = $manager->connection($connectionName);
         
-		$job = $connection->getJobFromId($queue, $id);
+		$job = $connection->getJobFromId($id);
 
 		// If we're able to pull a job off of the stack, we will process it and
 		// then immediately return back out. If there is no job on the queue
 		// we will "sleep" the worker for the specified number of seconds.
 		if ( ! is_null($job))
 		{
+            $sleep = $job->available_at - time();
+            sleep($sleep);
 			return $this->worker->process(
 				$manager->getName($connectionName), $job, $maxTries, $delay
 			);
@@ -110,11 +107,7 @@ class AsyncCommand extends Command
     protected function getOptions()
     {
         return array(
-            array('queue', null, InputOption::VALUE_OPTIONAL, 'The queue name', null),
-            
-            array('delay', null, InputOption::VALUE_OPTIONAL, 'Amount of time to delay failed jobs', 0),
-            
-            array('tries', null, InputOption::VALUE_OPTIONAL, 'Number of times to attempt a job before logging it failed', 0),
+
         );
     }
 }

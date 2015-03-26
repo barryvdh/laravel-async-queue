@@ -5,6 +5,7 @@ use Illuminate\Database\Connection;
 use Illuminate\Queue\DatabaseQueue;
 use Illuminate\Queue\Jobs\DatabaseJob;
 use Symfony\Component\Process\Process;
+use Carbon\Carbon;
 
 class AsyncQueue extends DatabaseQueue
 {
@@ -130,7 +131,7 @@ class AsyncQueue extends DatabaseQueue
         if($job) {
             
 			return new DatabaseJob(
-				$this->container, $this, $job, $queue
+				$this->container, $this, $job, $job->queue
 			);
         }
 	}

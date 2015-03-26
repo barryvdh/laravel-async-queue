@@ -74,10 +74,10 @@ class AsyncCommand extends Command
 		// we will "sleep" the worker for the specified number of seconds.
 		if ( ! is_null($job))
 		{
-            $sleep = $job->available_at - time();
+            $sleep = max($job->getDatabaseJob()->available_at - time(), 0);
             sleep($sleep);
 			return $this->worker->process(
-				$manager->getName($connectionName), $job, $maxTries, $delay
+				$manager->getName($connectionName), $job
 			);
 		}
 

@@ -118,11 +118,15 @@ class AsyncQueue extends DatabaseQueue
                     
         if($job) {
             $this->markJobAsReserved($job->id);
+
+            $this->database->commit();
             
 			return new DatabaseJob(
 				$this->container, $this, $job, $queue
 			);
         }
+
+        $this->database->commit();
 	}
 
     /**

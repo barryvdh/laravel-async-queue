@@ -62,7 +62,7 @@ class AsyncQueue extends DatabaseQueue
 	 */
 	public function pushRaw($payload, $queue = null, array $options = array())
 	{
-		$id = parent::push($job, $data, $queue);
+		$id = parent::pushRaw($payload, $queue, $options);
         $this->startProcess($id);
 
         return $id;

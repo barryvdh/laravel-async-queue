@@ -1,6 +1,8 @@
 <?php
 namespace Barryvdh\Queue;
 
+use Carbon\Carbon;
+use DateTime;
 use Illuminate\Database\Connection;
 use Illuminate\Queue\DatabaseQueue;
 use Illuminate\Queue\Jobs\DatabaseJob;
@@ -45,7 +47,7 @@ class AsyncQueue extends DatabaseQueue
     public function push($job, $data = '', $queue = null)
     {
         $id = parent::push($job, $data, $queue);
-        $this->startProcess($queue, $id);
+        $this->startProcess($id);
 
         return $id;
     }
@@ -61,7 +63,7 @@ class AsyncQueue extends DatabaseQueue
 	public function pushRaw($payload, $queue = null, array $options = array())
 	{
 		$id = parent::push($job, $data, $queue);
-        $this->startProcess($queue, $id);
+        $this->startProcess($id);
 
         return $id;
 	}
@@ -79,7 +81,7 @@ class AsyncQueue extends DatabaseQueue
     public function later($delay, $job, $data = '', $queue = null)
     {
         $id = parent::later($delay, $job, $data, $queue);
-        $this->startProcess($queue, $id);
+        $this->startProcess($id);
 
         return $id;
     }
@@ -95,9 +97,24 @@ class AsyncQueue extends DatabaseQueue
 	public function release($queue, $job, $delay)
 	{
 		$id = parent::release($queue, $job, $delay);
-        $this->startProcess($queue, $id);
+        $this->startProcess($id);
 
         return $id;
+	}
+    
+    protected function pushToDatabase($delay, $queue, $payload, $attempts = 0)
+	{
+		$availableAt = $delay instanceof DateTime ? $delay : Carbon::now()->addSeconds($delay);
+
+		return $this->database->table($this->table)->insertGetId([
+			'queue' => $this->getQueue($queue),
+			'payload' => $payload,
+			'attempts' => $attempts,
+			'reserved' => 1,
+			'reserved_at' => $this->getTime(),
+			'available_at' => $availableAt->getTimestamp(),
+			'created_at' => $this->getTime(),
+		]);
 	}
     
     /**
@@ -106,25 +123,20 @@ class AsyncQueue extends DatabaseQueue
 	 * @param  string|null  $queue
 	 * @return \StdClass|null
 	 */
-	public function getJobFromId($queue, $id)
+	public function getJobFromId($id)
 	{
-		$this->database->beginTransaction();
 		$job = $this->database->table($this->table)
-					->lockForUpdate()
-					->where('queue', $this->getQueue($queue))
-					->where('reserved', 0)
 					->where('id', $id)
 					->first();
                     
         if($job) {
-            $this->markJobAsReserved($job->id);
             
 			return new DatabaseJob(
-				$this->container, $this, $job, $queue
+				$this->container, $this, $job, $job->queue
 			);
         }
 	}
-
+    
     /**
      * Make a Process for the Artisan command for the job id.
      *
@@ -133,9 +145,9 @@ class AsyncQueue extends DatabaseQueue
      *
      * @return void
      */
-    public function startProcess($queue, $id)
+    public function startProcess($id)
     {
-        $command = $this->getCommand($queue, $id);
+        $command = $this->getCommand($id);
         $cwd = base_path();
 
         $process = new Process($command, $cwd);
@@ -150,16 +162,15 @@ class AsyncQueue extends DatabaseQueue
      *
      * @return string
      */
-    protected function getCommand($queue, $id)
+    protected function getCommand($id)
     {
         $connection = $this->connectionName;
-        $cmd = '%s artisan queue:async %d %s --env=%s --queue=%s';
+        $cmd = '%s artisan queue:async %d %s';
         $cmd = $this->getBackgroundCommand($cmd);
 
         $binary = $this->getPhpBinary();
-        $environment = $this->container->environment();
 
-        return sprintf($cmd, $binary, $id, $connection, $environment, $this->getQueue($queue));
+        return sprintf($cmd, $binary, $id, $connection);
     }
 
     /**

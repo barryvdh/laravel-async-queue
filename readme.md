@@ -12,11 +12,11 @@ This package is more usable as an alternative for running incidental tasks in th
 
 Require the latest version of this package with Composer
 
-    composer require barryvdh/laravel-async-queue:"0.4.x@dev"
+    composer require barryvdh/laravel-async-queue:"0.4.x"
 
 Add the Service Provider to the providers array in config/app.php
 
-    'Barryvdh\Queue\AsyncServiceProvider',
+    Barryvdh\Queue\AsyncServiceProvider::class,
 
 You need to create the migration table for queues and run it.
 

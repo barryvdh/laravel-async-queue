@@ -23,7 +23,7 @@ You need to create the migration table for queues and run it.
     $ php artisan queue:table
     $ php artisan migrate
 
-You should now be able to use the async driver in config/queue.php
+You should now be able to use the async driver in config/queue.php. Use the same config as for the database, but use async as driver.
 
     'default' => 'async',
 
@@ -31,6 +31,9 @@ You should now be able to use the async driver in config/queue.php
         ...
         'async' => array(
             'driver' => 'async',
+            'table' => 'queue_jobs',
+            'queue' => 'default',
+            'expire' => 60,
         ),
         ...
     }
@@ -41,6 +44,9 @@ By default, `php` is used as the binary path to PHP. You can change this by addi
         ...
         'async' => array(
             'driver' => 'async',
+            'table' => 'queue_jobs',
+            'queue' => 'default',
+            'expire' => 60,
             'binary' => 'php',
             'binary_args' => '',
         ),

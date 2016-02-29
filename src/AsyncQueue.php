@@ -86,22 +86,6 @@ class AsyncQueue extends DatabaseQueue
         return $id;
     }
     
-    /**
-	 * Release a reserved job back onto the queue.
-	 *
-	 * @param  string  $queue
-	 * @param  \StdClass  $job
-	 * @param  int  $delay
-	 * @return void
-	 */
-	public function release($queue, $job, $delay)
-	{
-		$id = parent::release($queue, $job, $delay);
-        $this->startProcess($id);
-
-        return $id;
-	}
-    
     protected function pushToDatabase($delay, $queue, $payload, $attempts = 0)
 	{
 		$availableAt = $delay instanceof DateTime ? $delay : Carbon::now()->addSeconds($delay);

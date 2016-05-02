@@ -27,7 +27,7 @@ class AsyncQueue extends SyncQueue
      *
      * @return int
      */
-    public function push($job, $data = '', $name = '')
+    public function push($job, $data = '', $name = null)
     {
         $id = $this->storeJob($job, $data, 0);
         $this->startProcess($id, 0, $name);
@@ -67,7 +67,7 @@ class AsyncQueue extends SyncQueue
      *
      * @return void
      */
-    public function startProcess($jobId, $delay = 0, $name = '')
+    public function startProcess($jobId, $delay = 0, $name = null)
     {
         $command = $this->getCommand($jobId, $delay, $name);
         $cwd = $this->container['path.base'];
@@ -132,11 +132,11 @@ class AsyncQueue extends SyncQueue
      *
      * @return int
      */
-    public function later($delay, $job, $data = '', $queue = null)
+    public function later($delay, $job, $data = '', $name = null)
     {
         $delay = $this->getSeconds($delay);
         $id = $this->storeJob($job, $data, $delay);
-        $this->startProcess($id, $delay);
+        $this->startProcess($id, $delay, $name);
 
         return $id;
     }

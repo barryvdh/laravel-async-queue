@@ -27,10 +27,10 @@ class AsyncQueue extends SyncQueue
      *
      * @return int
      */
-    public function push($job, $data = '', $queue = null)
+    public function push($job, $data = '', $name = '')
     {
         $id = $this->storeJob($job, $data, 0);
-        $this->startProcess($id, 0);
+        $this->startProcess($id, 0, $name);
 
         return $id;
     }
@@ -67,9 +67,9 @@ class AsyncQueue extends SyncQueue
      *
      * @return void
      */
-    public function startProcess($jobId, $delay = 0)
+    public function startProcess($jobId, $delay = 0, $name = '')
     {
-        $command = $this->getCommand($jobId, $delay);
+        $command = $this->getCommand($jobId, $delay, $name);
         $cwd = $this->container['path.base'];
 
         $process = new Process($command, $cwd);
@@ -84,15 +84,14 @@ class AsyncQueue extends SyncQueue
      *
      * @return string
      */
-    protected function getCommand($jobId, $delay = 0)
+    protected function getCommand($jobId, $delay = 0, $name = null)
     {
-        $cmd = '%s artisan queue:async %d --env=%s --delay=%d';
+        $cmd = '%s artisan queue:async %d --name=%s --delay=%d';
         $cmd = $this->getBackgroundCommand($cmd);
 
         $binary = $this->getPhpBinary();
-        $environment = $this->container->environment();
 
-        return sprintf($cmd, $binary, $jobId, $environment, $delay);
+        return sprintf($cmd, $binary, $jobId, $name, $delay);
     }
 
     /**

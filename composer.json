@@ -1,28 +1,27 @@
 {
-    "name": "barryvdh/laravel-async-queue",
-    "description": "Async Queue Driver for Laravel (Push to background)",
-    "keywords": ["laravel", "queue", "async", "background"],
+    "name": "armxy/laravel-internal-queue",
+    "description": "Internal Queue Driver for Laravel (Push to background)",
+    "keywords": ["laravel", "queue", "async", "internal", "background"],
     "license": "MIT",
     "authors": [
         {
-            "name": "Barry vd. Heuvel",
-            "email": "barryvdh@gmail.com"
+            "name": "Thanayu Thanakitworawat",
+            "email": "dead1body@hotmail.com"
         }
     ],
     "require": {
-        "php": ">=5.4.0",
-        "illuminate/support": "5.0.x|5.1.x|5.2.x|5.3.x",
-        "illuminate/console": "5.0.x|5.1.x|5.2.x|5.3.x",
-        "symfony/process": "~2.6|~3.0"
+        "php": ">=5.3.0",
+        "illuminate/support": "4.x|5.0.x",
+        "illuminate/console": "4.x|5.0.x",
+        "illuminate/container": "4.x|5.0.x",
+        "illuminate/queue": "4.x|5.0.x"
     },
     "autoload": {
+        "classmap": [
+            "src/migrations"
+        ],
         "psr-4": {
-            "Barryvdh\\Queue\\": "src/"
-        }
-    },
-    "extra": {
-        "branch-alias": {
-            "dev-master": "0.4-dev"
+            "Armxy\\Queue\\": "src/"
         }
     }
 }

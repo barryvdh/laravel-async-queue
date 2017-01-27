@@ -12,7 +12,7 @@ This package is more usable as an alternative for running incidental tasks in th
 
 Require the latest version of this package with Composer
 
-    composer require barryvdh/laravel-async-queue:"0.4.x"
+    composer require barryvdh/laravel-async-queue
 
 Add the Service Provider to the providers array in config/app.php
 

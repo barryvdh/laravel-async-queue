@@ -1,5 +1,5 @@
 {
-    "name": "barryvdh/laravel-async-queue",
+    "name": "nuwave/laravel-async-queue",
     "description": "Async Queue Driver for Laravel (Push to background)",
     "keywords": ["laravel", "queue", "async", "background"],
     "license": "MIT",
@@ -11,8 +11,8 @@
     ],
     "require": {
         "php": ">=5.4.0",
-        "illuminate/support": "5.3.x",
-        "illuminate/console": "5.3.x",
+        "illuminate/support": "5.4.x",
+        "illuminate/console": "5.4.x",
         "symfony/process": "~2.6|~3.0"
     },
     "autoload": {

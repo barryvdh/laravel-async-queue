@@ -1,6 +1,9 @@
-# Laravel 5.3 Async Queue Driver
+# Laravel 5.4 Async Queue Driver
 
 ## Push a function/closure to the background.
+
+
+### For Laravel 5.3, check the [0.5 branch](https://github.com/barryvdh/laravel-async-queue/tree/0.4)
 
 Just like the 'sync' driver, this is not a real queue driver. It is always fired immediatly.
 The only difference is that the closure is sent to the background without waiting for the response.
@@ -31,7 +34,7 @@ You should now be able to use the async driver in config/queue.php. Use the same
         ...
         'async' => array(
             'driver' => 'async',
-            'table' => 'queue_jobs',
+            'table' => 'jobs',
             'queue' => 'default',
             'expire' => 60,
         ),
@@ -44,7 +47,7 @@ By default, `php` is used as the binary path to PHP. You can change this by addi
         ...
         'async' => array(
             'driver' => 'async',
-            'table' => 'queue_jobs',
+            'table' => 'jobs',
             'queue' => 'default',
             'expire' => 60,
             'binary' => 'php',

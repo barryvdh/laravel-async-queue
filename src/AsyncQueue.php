@@ -104,8 +104,8 @@ class AsyncQueue extends DatabaseQueue
     /**
      * Get the next available job for the queue.
      *
-     * @param  string|null  $queue
-     * @return \StdClass|null
+     * @param  int $id
+     * @return DatabaseJob
      */
     public function getJobFromId($id)
     {
@@ -113,10 +113,9 @@ class AsyncQueue extends DatabaseQueue
                     ->where('id', $id)
                     ->first();
                     
-        if($job) {
-            
+        if ($job) {
             return new DatabaseJob(
-                $this->container, $this, $job, $job->queue
+                $this->container, $this, $job, $this->connectionName, $job->queue
             );
         }
     }
@@ -124,8 +123,7 @@ class AsyncQueue extends DatabaseQueue
     /**
      * Make a Process for the Artisan command for the job id.
      *
-     * @param int $jobId
-     * @param int $delay
+     * @param int $id
      *
      * @return void
      */
@@ -141,8 +139,7 @@ class AsyncQueue extends DatabaseQueue
     /**
      * Get the Artisan command as a string for the job id.
      *
-     * @param int $jobId
-     * @param int $delay
+     * @param int $id
      *
      * @return string
      */
@@ -184,7 +181,4 @@ class AsyncQueue extends DatabaseQueue
             return $cmd.' > /dev/null 2>&1 &';
         }
     }
-
-    
-
 }

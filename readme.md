@@ -3,7 +3,7 @@
 ## Push a function/closure to the background.
 
 
-### For Laravel 5.3, check the [0.5 branch](https://github.com/barryvdh/laravel-async-queue/tree/0.4)
+### For Laravel 5.3, check the [0.5 branch](https://github.com/barryvdh/laravel-async-queue/tree/0.5)
 
 Just like the 'sync' driver, this is not a real queue driver. It is always fired immediatly.
 The only difference is that the closure is sent to the background without waiting for the response.
@@ -28,8 +28,6 @@ You need to create the migration table for queues and run it.
 
 You should now be able to use the async driver in config/queue.php. Use the same config as for the database, but use async as driver.
 
-    'default' => 'async',
-
     'connections' => array(
         ...
         'async' => array(
@@ -41,7 +39,9 @@ You should now be able to use the async driver in config/queue.php. Use the same
         ...
     }
 
-By default, `php` is used as the binary path to PHP. You can change this by adding the `binary` option to the queue config. You can also add extra arguments (for HHVM for example)
+Set the default to `async`, either by changing to config or setting `QUEUE_DRIVER` in your `.env` file to `async`.
+
+> Note: By default, `php` is used as the binary path to PHP. You can change this by adding the `binary` option to the queue config. You can also add extra arguments (for HHVM for example)
 
     'connections' => array(
         ...

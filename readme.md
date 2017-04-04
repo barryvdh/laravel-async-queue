@@ -56,7 +56,5 @@ Set the default to `async`, either by changing to config or setting `QUEUE_DRIVE
         ...
     }
 
-It should work the same as the sync driver, so no need to run a queue listener. Downside is that you cannot actually queue or plan things.
-Queue::later() is also fired directly, but just runs `sleep($delay)` in background..
-For more info see http://laravel.com/docs/queues
+It should work the same as the sync driver, so no need to run a queue listener. Downside is that you cannot actually queue or plan things. Queue::later() is also fired directly. For more info see http://laravel.com/docs/queues
 

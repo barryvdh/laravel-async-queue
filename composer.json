@@ -11,9 +11,9 @@
     ],
     "require": {
         "php": ">=5.4.0",
-        "illuminate/support": "5.3.x|5.4.x",
-        "illuminate/console": "5.3.x|5.4.x",
-        "symfony/process": "~2.6|~3.0"
+        "illuminate/support": "5.4.x",
+        "illuminate/console": "5.4.x",
+        "symfony/process": "~3.2"
     },
     "autoload": {
         "psr-4": {
@@ -22,7 +22,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "0.5-dev"
+            "dev-master": "0.6-dev"
         }
     }
 }

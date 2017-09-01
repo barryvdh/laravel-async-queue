@@ -23,6 +23,11 @@
     "extra": {
         "branch-alias": {
             "dev-master": "0.7-dev"
+        },
+        "laravel": {
+            "providers": [
+                "Barryvdh\\Queue\\AsyncServiceProvider"
+            ]
         }
     }
 }

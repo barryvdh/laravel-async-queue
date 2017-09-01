@@ -51,7 +51,7 @@ class AsyncCommand extends Command
      * @param WorkerOptions $options
      * @return void
      */
-    public function fire(WorkerOptions $options)
+    public function handle(WorkerOptions $options)
     {
         $id = $this->argument('id');
         $connection = $this->argument('connection');

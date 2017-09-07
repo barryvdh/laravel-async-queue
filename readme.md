@@ -3,9 +3,9 @@
 ## Push a function/closure to the background.
 
 
-### For Laravel 5.4, check the [0.6 branch](https://github.com/barryvdh/laravel-async-queue/tree/0.6)
+### For Laravel 5.4, check the [0.6 branch](https://github.com/barryvdh/laravel-async-queue/tree/v0.6.0)
 
-### For Laravel 5.3, check the [0.5 branch](https://github.com/barryvdh/laravel-async-queue/tree/0.5)
+### For Laravel 5.3, check the [0.5 branch](https://github.com/barryvdh/laravel-async-queue/tree/v0.5.0)
 
 Just like the 'sync' driver, this is not a real queue driver. It is always fired immediatly.
 The only difference is that the closure is sent to the background without waiting for the response.

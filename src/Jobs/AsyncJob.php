@@ -70,27 +70,6 @@ class AsyncJob extends SyncJob
     }
 
     /**
-     * Release the job back into the queue.
-     *
-     * @param  int   $delay
-     * @return void
-     */
-    public function release($delay = 0)
-    {
-        // Update the Job status
-        $this->job->status = Job::STATUS_OPEN;
-        $this->job->save();
-
-        // Wait for the delay
-        if ($delay) {
-            sleep($this->getSeconds($delay));
-        }
-
-        // Fire again
-        $this->fire();
-    }
-
-    /**
      * Get the number of times the job has been attempted.
      *
      * @return int

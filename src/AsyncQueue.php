@@ -5,6 +5,7 @@ use Illuminate\Database\Connection;
 use Illuminate\Queue\DatabaseQueue;
 use Illuminate\Queue\Jobs\DatabaseJob;
 use Symfony\Component\Process\Process;
+use Illuminate\Queue\Jobs\DatabaseJobRecord;
 
 class AsyncQueue extends DatabaseQueue
 {
@@ -114,6 +115,7 @@ class AsyncQueue extends DatabaseQueue
                     ->first();
                     
         if ($job) {
+            $job = $this->markJobAsReserved(new DatabaseJobRecord((object) $job));
             return new DatabaseJob(
                 $this->container, $this, $job, $this->connectionName, $job->queue
             );

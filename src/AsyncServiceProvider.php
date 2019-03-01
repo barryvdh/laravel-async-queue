@@ -71,6 +71,6 @@ class AsyncServiceProvider extends ServiceProvider
      */
     public function provides()
     {
-        return array('command.queue.async');
+        return ['command.queue.async'];
     }
 }

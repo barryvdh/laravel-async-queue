@@ -4,11 +4,9 @@ namespace Barryvdh\Queue\Console;
 
 use Barryvdh\Queue\AsyncQueue;
 use Illuminate\Console\Command;
-use Illuminate\Queue\DatabaseQueue;
 use Illuminate\Queue\Worker;
 use Illuminate\Queue\WorkerOptions;
 use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
 
 class AsyncCommand extends Command
 {
@@ -63,9 +61,12 @@ class AsyncCommand extends Command
 
     /**
      *  Process the job
+     *
      * @param string $connectionName
      * @param integer $id
      * @param WorkerOptions $options
+     *
+     * @throws \Throwable
      */
     protected function processJob($connectionName, $id, $options)
     {
@@ -90,9 +91,9 @@ class AsyncCommand extends Command
      */
     protected function getArguments()
     {
-        return array(
-            array('id', InputArgument::REQUIRED, 'The Job ID'),
-            array('connection', InputArgument::OPTIONAL, 'The name of connection'),
-        );
+        return [
+            ['id', InputArgument::REQUIRED, 'The Job ID'],
+            ['connection', InputArgument::OPTIONAL, 'The name of connection'],
+        ];
     }
 }

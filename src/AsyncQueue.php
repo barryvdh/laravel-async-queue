@@ -59,7 +59,7 @@ class AsyncQueue extends DatabaseQueue
      * @param  array   $options
      * @return mixed
      */
-    public function pushRaw($payload, $queue = null, array $options = array())
+    public function pushRaw($payload, $queue = null, array $options = [])
     {
         $id = parent::pushRaw($payload, $queue, $options);
         $this->startProcess($id);
@@ -164,23 +164,24 @@ class AsyncQueue extends DatabaseQueue
     protected function getPhpBinary()
     {
         $path = $this->binary;
-        if (!defined('PHP_WINDOWS_VERSION_BUILD')) {
+        if ( ! defined('PHP_WINDOWS_VERSION_BUILD')) {
             $path = escapeshellarg($path);
         }
 
         $args = $this->binaryArgs;
-        if(is_array($args)){
+        if (is_array($args)) {
             $args = implode(' ', $args);
         }
-        return trim($path.' '.$args);
+
+        return trim($path . ' ' . $args);
     }
 
     protected function getBackgroundCommand($cmd)
     {
         if (defined('PHP_WINDOWS_VERSION_BUILD')) {
-            return 'start /B '.$cmd.' > NUL';
-        } else {
-            return $cmd.' > /dev/null 2>&1 &';
+            return 'start /B ' . $cmd . ' > NUL';
         }
+
+        return $cmd . ' > /dev/null 2>&1 &';
     }
 }

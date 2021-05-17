@@ -134,7 +134,7 @@ class AsyncQueue extends DatabaseQueue
         $command = $this->getCommand($id);
         $cwd = base_path();
 
-        $process = new Process($command, $cwd);
+        $process = new Process([$command], $cwd);
         $process->run();
     }
 

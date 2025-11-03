@@ -7,6 +7,8 @@ The only difference is that the closure is sent to the background without waitin
 This package is more usable as an alternative for running incidental tasks in the background, without setting up a 'real' queue driver.
 It is similar to the 'deferred' connection, but it runs in a background process, so might be more suitable for long running tasks.
 
+> Note: Since v0.8 this uses the Concurrently::defer() method instead of the database queue. No database migrations tables are required now. The config can be simplified as below.
+> 
 ### Install
 
 Require the latest version of this package with Composer

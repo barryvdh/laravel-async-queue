@@ -3,29 +3,15 @@
 namespace Barryvdh\Queue\Connectors;
 
 use Barryvdh\Queue\AsyncQueue;
-use Illuminate\Queue\Connectors\DatabaseConnector;
-use Illuminate\Support\Arr;
+use Illuminate\Queue\Connectors\SyncConnector;
 
-class AsyncConnector extends DatabaseConnector
+class AsyncConnector extends SyncConnector
 {
-
     /**
-     * Establish a queue connection.
-     *
-     * @param array $config
-     *
-     * @return \Illuminate\Contracts\Queue\Queue
+     * {@inheritdoc}
      */
     public function connect(array $config)
     {
-        return new AsyncQueue(
-			$this->connections->connection(Arr::get($config, 'connection')),
-			$config['table'],
-			$config['queue'],
-			Arr::get($config, 'expire', 60),
-            Arr::get($config, 'binary', 'php'),
-            Arr::get($config, 'binary_args', ''),
-            Arr::get($config, 'connection_name', '')
-		);
+        return new AsyncQueue($config['after_commit'] ?? null);
     }
 }

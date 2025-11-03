@@ -4,17 +4,11 @@ namespace Barryvdh\Queue;
 
 use Barryvdh\Queue\Connectors\AsyncConnector;
 use Barryvdh\Queue\Console\AsyncCommand;
+use Illuminate\Contracts\Support\DeferrableProvider;
 use Illuminate\Support\ServiceProvider;
 
-class AsyncServiceProvider extends ServiceProvider
+class AsyncServiceProvider extends ServiceProvider implements DeferrableProvider
 {
-    /**
-     * Indicates if loading of the provider is deferred.
-     *
-     * @var bool
-     */
-    protected $defer = false;
-
     /**
      * Add the connector to the queue drivers.
      *
@@ -23,31 +17,6 @@ class AsyncServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->registerAsyncConnector($this->app['queue']);
-
-        $this->commands('command.queue.async');
-    }
-
-    /**
-     * Register the service provider.
-     *
-     * @return void
-     */
-    public function register()
-    {
-        $this->registerAsyncCommand();
-    }
-
-    /**
-     * Register the queue listener console command.
-     *
-     *
-     * @return void
-     */
-    protected function registerAsyncCommand()
-    {
-        $this->app->singleton('command.queue.async', function () {
-             return new AsyncCommand($this->app['queue.worker']);
-        });
     }
 
     /**
@@ -60,17 +29,7 @@ class AsyncServiceProvider extends ServiceProvider
     protected function registerAsyncConnector($manager)
     {
         $manager->addConnector('async', function () {
-            return new AsyncConnector($this->app['db']);
+            return new AsyncConnector;
         });
-    }
-
-    /**
-     * Get the services provided by the provider.
-     *
-     * @return array
-     */
-    public function provides()
-    {
-        return ['command.queue.async'];
     }
 }

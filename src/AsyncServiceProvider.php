@@ -3,8 +3,7 @@
 namespace Barryvdh\Queue;
 
 use Barryvdh\Queue\Connectors\AsyncConnector;
-use Barryvdh\Queue\Console\AsyncCommand;
-use Illuminate\Contracts\Support\DeferrableProvider;
+use Illuminate\Queue\QueueManager;
 use Illuminate\Support\ServiceProvider;
 
 class AsyncServiceProvider extends ServiceProvider
@@ -14,22 +13,22 @@ class AsyncServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
+    public function register()
     {
-        $this->registerAsyncConnector($this->app['queue']);
+        $this->registerAsyncConnector();
     }
 
     /**
      * Register the Async queue connector.
      *
-     * @param \Illuminate\Queue\QueueManager $manager
-     *
      * @return void
      */
-    protected function registerAsyncConnector($manager)
+    protected function registerAsyncConnector()
     {
-        $manager->addConnector('async', function () {
-            return new AsyncConnector;
+        $this->callAfterResolving(QueueManager::class, function ($manager) {
+            $manager->addConnector('async', function () {
+                return new AsyncConnector;
+            });
         });
     }
 }

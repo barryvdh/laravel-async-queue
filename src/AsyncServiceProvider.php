@@ -7,7 +7,7 @@ use Barryvdh\Queue\Console\AsyncCommand;
 use Illuminate\Contracts\Support\DeferrableProvider;
 use Illuminate\Support\ServiceProvider;
 
-class AsyncServiceProvider extends ServiceProvider implements DeferrableProvider
+class AsyncServiceProvider extends ServiceProvider
 {
     /**
      * Add the connector to the queue drivers.

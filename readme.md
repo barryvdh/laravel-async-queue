@@ -1,5 +1,8 @@
 # Laravel Async Queue Driver
 
+## Available as `background` in Laravel [v12.37](https://github.com/laravel/framework/releases/tag/v12.37.0)
+Update you config to use driver 'background' and you don't need this package anymore.
+
 ## Push a function/closure to the background.
 
 Just like the 'sync' or 'deferred' connection, this is not a real queue. It is always fired immediately.
